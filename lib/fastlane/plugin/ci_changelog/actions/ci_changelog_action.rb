@@ -15,6 +15,7 @@ module Fastlane
         return UI.message('Skip, Not detect CI environment') unless FastlaneCore::Helper.is_ci?
 
         if Helper::CiChangelogHelper.jenkins?
+          Helper::CiChangelogHelper.determine_jenkins_options!(params)
           fetch_jenkins_changelog!
         elsif Helper::CiChangelogHelper.gitlab?
           Helper::CiChangelogHelper.determine_gitlab_options!(params)
@@ -33,9 +34,10 @@ module Fastlane
         loop do
           res = RestClient.get("#{ENV['JOB_URL']}/#{build_number}/api/json")
           if res.code == 200
-            data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
+            build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
 
-            if data.kind_of?(TrueClass)
+            if build_status == true
+              commits = data
               fetch_correct_changelog = true
             else
               commits = commits.empty? ? data : commits.concat(data)
@@ -89,7 +91,7 @@ module Fastlane
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :jenkins_token,
                                   env_name: "CI_CHANGELOG_JENKINS_TOKEN",
-                               description: "the token of jenkins if enabled security",
+                               description: "the token or password of jenkins if enabled security",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :gitlab_url,

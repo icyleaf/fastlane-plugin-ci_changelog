@@ -3,9 +3,6 @@ require 'json'
 module Fastlane
   module Helper
     class CiChangelogHelper
-      # class methods that you define here become available in your action
-      # as `Helper::CiChangelogHelper.your_method`
-      #
       def self.show_message
         UI.message("Hello from the ci_changelog plugin helper!")
       end
@@ -17,13 +14,17 @@ module Fastlane
 
       def self.dump_jenkin_commits(body)
         json = JSON.parse(body)
-        return true if json['result'] == 'SUCCESS'
-
-        json['changeSet']['items'].each_with_object([]) do |commit, obj|
+        commit = json['changeSet']['items'].each_with_object([]) do |commit, obj|
           obj.push({
             date: commit['date'],
             msg: commit['msg']
           })
+        end
+
+        if json['result'] == 'SUCCESS'
+          [true, commit]
+        else
+          [false, commit]
         end
       end
 
@@ -31,6 +32,25 @@ module Fastlane
         %w(gitlab_url gitlab_private_token).each do |key|
           UI.user_error!("Missing #{key} param or empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
         end
+      end
+
+      def self.determine_jenkins_options!(options)
+        if determine_jenkins_basic_auth?
+          %w(jenkins_url jenkins_user jenkins_token).each do |key|
+            UI.user_error!("Missing #{key} param or empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
+          end
+        end
+      end
+
+      def self.determine_jenkins_basic_auth?
+        res = RestClient.get("#{ENV['JENKINS_URL']}/api/json")
+        if res.code == 200 && res.headers[:content_type].include?('json')
+          return false
+        else
+          return true
+        end
+      rescue RestClient::Forbidden
+        return true
       end
 
       def self.store_sharedvalue(key, value)
