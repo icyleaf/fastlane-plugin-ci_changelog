@@ -1,9 +1,17 @@
 describe Fastlane::Actions::CiChangelogAction do
-  describe '#run' do
-    it 'prints a message' do
-      expect(Fastlane::UI).to receive(:message).with("The ci_changelog plugin is working!")
+  describe '#Information' do
+    it 'Should has a version number' do
+      expect(Fastlane::CiChangelog::VERSION).not_to be_nil
+    end
+  end
 
-      Fastlane::Actions::CiChangelogAction.run(nil)
+  describe '#Integration' do
+    it "should execute smooth without ci environment" do
+      result = Fastlane::FastFile.new.parse("lane :test do
+          ci_changelog
+        end").runner.execute(:test)
+
+      expect(result).to be true
     end
   end
 end

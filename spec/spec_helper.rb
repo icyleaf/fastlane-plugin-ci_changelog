@@ -6,5 +6,6 @@ end
 
 require 'fastlane' # to import the Action super class
 require 'fastlane/plugin/ci_changelog' # import the actual plugin
+require 'webmock/rspec'
 
 Fastlane.load_actions # load other actions (in case your plugin calls other actions or shared values)
