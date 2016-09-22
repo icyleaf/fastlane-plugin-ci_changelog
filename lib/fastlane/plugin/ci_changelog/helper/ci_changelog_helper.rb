@@ -14,10 +14,10 @@ module Fastlane
 
       def self.dump_jenkin_commits(body)
         json = JSON.parse(body)
-        commit = json['changeSet']['items'].each_with_object([]) do |commit, obj|
+        commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
-            date: commit['date'],
-            msg: commit['msg']
+            date: item['date'],
+            msg: item['msg']
           })
         end
 
@@ -36,7 +36,7 @@ module Fastlane
 
       def self.determine_jenkins_options!(options)
         if determine_jenkins_basic_auth?
-          %w(jenkins_url jenkins_user jenkins_token).each do |key|
+          %w(jenkins_user jenkins_token).each do |key|
             UI.user_error!("Missing #{key} param or empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
           end
         end

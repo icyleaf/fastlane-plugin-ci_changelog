@@ -3,17 +3,18 @@ require 'rest-client'
 module Fastlane
   module Actions
     module SharedValues
-      CI_CHANGLOG = :CI_CHANGLOG
-      CI_SCM = :CI_SCM_BRANCH
-      CI_SCM_BRANCH = :CI_SCM_BRANCH
-      CI_SCM_COMMIT = :CI_SCM_COMMIT
-      CI_PROJECT_URL = :CI_PROJECT_URL
+      CICL_CHANGLOG = :CICL_CHANGLOG
+      CICL_SCM = :CICL_SCM_BRANCH
+      CICL_SCM_BRANCH = :CICL_SCM_BRANCH
+      CICL_SCM_COMMIT = :CICL_SCM_COMMIT
+      CICL_PROJECT_URL = :CICL_PROJECT_URL
     end
 
     class CiChangelogAction < Action
       def self.run(params)
         return UI.message('Skip, Not detect CI environment') unless FastlaneCore::Helper.is_ci?
 
+        @params = params
         if Helper::CiChangelogHelper.jenkins?
           Helper::CiChangelogHelper.determine_jenkins_options!(params)
           fetch_jenkins_changelog!
@@ -32,7 +33,18 @@ module Fastlane
 
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
-          res = RestClient.get("#{ENV['JOB_URL']}/#{build_number}/api/json")
+          build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
+          res = if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
+            RestClient::Request.execute(
+              method: :get,
+              url: build_url,
+              user: @params.fetch(:jenkins_user),
+              password: @params.fetch(:jenkins_token)
+            )
+          else
+            RestClient.get(build_url)
+          end
+
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
 
@@ -50,7 +62,7 @@ module Fastlane
         end
         commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
-        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CI_CHANGLOG, commits.to_json)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGLOG, commits.to_json)
       end
 
       def self.fetch_gitlab_changelog!
@@ -61,11 +73,11 @@ module Fastlane
 
       def self.output
         [
-          ['CI_CHANGLOG', 'the json formatted changelog of CI'],
-          ['CI_SCM', 'the SCM name of CI'],
-          ['CI_SCM_BRANCH', 'the branch name of CI SCM'],
-          ['CI_SCM_COMMIT', 'the latest commit of CI SCM'],
-          ['CI_PROJECT_URL', 'the project url of CI']
+          ['CICL_CHANGLOG', 'the json formatted changelog of CI'],
+          ['CICL_SCM', 'the SCM name of CI'],
+          ['CICL_SCM_BRANCH', 'the branch name of CI SCM'],
+          ['CICL_SCM_COMMIT', 'the latest commit of CI SCM'],
+          ['CICL_PROJECT_URL', 'the project url of CI']
         ]
       end
 
@@ -79,28 +91,23 @@ module Fastlane
 
       def self.available_options
         [
-          FastlaneCore::ConfigItem.new(key: :jenkins_url,
-                                  env_name: "CI_CHANGELOG_JENKINS_URL",
-                               description: "the url of jenkins",
-                                  optional: true,
-                                      type: String),
           FastlaneCore::ConfigItem.new(key: :jenkins_user,
-                                  env_name: "CI_CHANGELOG_JENKINS_USER",
+                                  env_name: "CICL_CHANGELOG_JENKINS_USER",
                                description: "the user of jenkins if enabled security",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :jenkins_token,
-                                  env_name: "CI_CHANGELOG_JENKINS_TOKEN",
+                                  env_name: "CICL_CHANGELOG_JENKINS_TOKEN",
                                description: "the token or password of jenkins if enabled security",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :gitlab_url,
-                                  env_name: "CI_CHANGELOG_GITLAB_URL",
+                                  env_name: "CICL_CHANGELOG_GITLAB_URL",
                                description: "the url of gitlab",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :gitlab_private_token,
-                                  env_name: "CI_CHANGELOG_GITLAB_PRIVATE_TOKEN",
+                                  env_name: "CICL_CHANGELOG_GITLAB_PRIVATE_TOKEN",
                                description: "the private token of gitlab",
                                   optional: true,
                                       type: String)

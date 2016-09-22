@@ -1,5 +1,5 @@
 describe Fastlane::Actions::CiChangelogAction do
-  describe '.gitlab' do
+  describe '#gitlab' do
     before do
       ENV['GITLAB_CI'] = 'true'
     end
