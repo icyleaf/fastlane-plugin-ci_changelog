@@ -17,7 +17,7 @@ module Fastlane
         commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
             date: item['date'],
-            msg: item['msg']
+            message: item['msg']
           })
         end
 
@@ -25,6 +25,20 @@ module Fastlane
           [true, commit]
         else
           [false, commit]
+        end
+      end
+
+      def self.dump_gitlab_commits(body)
+        json = JSON.parse(body)
+        commit = {
+          date: json['commit']['created_at'],
+          message: json['commit']['message'].strip
+        }
+
+        if json['status'] == 'success'
+          [true, [commit]]
+        else
+          [false, [commit]]
         end
       end
 

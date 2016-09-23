@@ -3,11 +3,15 @@ require 'rest-client'
 module Fastlane
   module Actions
     module SharedValues
+      CICL_CI = :CICL_CI
       CICL_CHANGLOG = :CICL_CHANGLOG
-      CICL_SCM = :CICL_SCM_BRANCH
-      CICL_SCM_BRANCH = :CICL_SCM_BRANCH
-      CICL_SCM_COMMIT = :CICL_SCM_COMMIT
-      CICL_PROJECT_URL = :CICL_PROJECT_URL
+    end
+
+    module CITypes
+      JENKINS = 'jenkens'
+      GITLAB_CI = 'gitlab ci'
+      TRAVIS_CI = 'travis ci'
+      UNKOWEN = 'unkown'
     end
 
     class CiChangelogAction < Action
@@ -16,12 +20,15 @@ module Fastlane
 
         @params = params
         if Helper::CiChangelogHelper.jenkins?
+          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::JENKINS)
           Helper::CiChangelogHelper.determine_jenkins_options!(params)
           fetch_jenkins_changelog!
         elsif Helper::CiChangelogHelper.gitlab?
+          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::GITLAB_CI)
           Helper::CiChangelogHelper.determine_gitlab_options!(params)
           fetch_gitlab_changelog!
         else
+          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::UNKOWEN)
           UI.message('Sorry, It is not support yet, available is Jenkins/Gitlab CI/Travis')
         end
       end
@@ -66,18 +73,43 @@ module Fastlane
       end
 
       def self.fetch_gitlab_changelog!
+        commits = []
+        loop_count = 1
+        fetch_correct_changelog = false
+
+        build_number = ENV['CI_BUILD_ID'].to_i
+        loop do
+          build_url = "#{@params[:gitlab_url]}/api/v3/projects/#{ENV['CI_PROJECT_ID']}/builds/#{build_number}"
+          res = RestClient.get(build_url, { 'PRIVATE-TOKEN' => @params[:gitlab_private_token] })
+
+          if res.code == 200
+            build_status, data = Helper::CiChangelogHelper.dump_gitlab_commits(res.body)
+
+            if build_status == true
+              commits = data if commits.empty?
+              fetch_correct_changelog = true
+            else
+              commits = commits.empty? ? data : commits.concat(data)
+              loop_count += 1
+            end
+          end
+          build_number -= 1
+
+          break if fetch_correct_changelog || build_number <= 0
+        end
+        commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
+
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGLOG, commits.to_json)
       end
 
       def self.fetch_travis_changelog!
+        # TODO
       end
 
       def self.output
         [
-          ['CICL_CHANGLOG', 'the json formatted changelog of CI'],
-          ['CICL_SCM', 'the SCM name of CI'],
-          ['CICL_SCM_BRANCH', 'the branch name of CI SCM'],
-          ['CICL_SCM_COMMIT', 'the latest commit of CI SCM'],
-          ['CICL_PROJECT_URL', 'the project url of CI']
+          ['CICL_CI', 'the name of CI'],
+          ['CICL_CHANGLOG', 'the json formatted changelog of CI']
         ]
       end
 
