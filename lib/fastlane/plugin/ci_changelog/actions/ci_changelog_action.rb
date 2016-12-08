@@ -20,10 +20,12 @@ module Fastlane
 
         @params = params
         if Helper::CiChangelogHelper.jenkins?
+          UI.message('ENV: jenkins')
           Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::JENKINS)
           Helper::CiChangelogHelper.determine_jenkins_options!(params)
           fetch_jenkins_changelog!
         elsif Helper::CiChangelogHelper.gitlab?
+          UI.message('ENV: gitlab')
           Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::GITLAB_CI)
           Helper::CiChangelogHelper.determine_gitlab_options!(params)
           fetch_gitlab_changelog!
@@ -51,6 +53,8 @@ module Fastlane
           else
             RestClient.get(build_url)
           end
+
+          UI.message(res.body)
 
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
