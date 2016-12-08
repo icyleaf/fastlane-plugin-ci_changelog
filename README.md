@@ -16,7 +16,7 @@ Automate generate changelog between previous and the latest commit of scm during
 
 ### Available CI system:
 
-- [x] enkins
+- [x] Jenkins
 - [x] Gitlab CI
 - [ ] Travis CI
 
