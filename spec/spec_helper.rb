@@ -1,13 +1,10 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
-
 require 'fastlane' # to import the Action super class
 require 'fastlane/plugin/ci_changelog' # import the actual plugin
 require 'webmock/rspec'
 require 'base64'
 require 'json'
-
-# WebMock.disable_net_connect!(allow_localhost: true)
 
 Fastlane.load_actions # load other actions (in case your plugin calls other actions or shared values)
 
