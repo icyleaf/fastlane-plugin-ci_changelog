@@ -35,8 +35,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -53,7 +53,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -80,8 +80,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -98,7 +98,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -126,8 +126,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -144,7 +144,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -181,8 +181,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -199,7 +199,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -226,8 +226,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -244,7 +244,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -272,8 +272,8 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
-        describe "-> ENV['CICL_CHANGLOG']" do
-          subject { ENV['CICL_CHANGLOG'] }
+        describe "-> ENV['CICL_CHANGELOG']" do
+          subject { ENV['CICL_CHANGELOG'] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String
@@ -290,7 +290,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         describe "-> Fastlane::Actions.lane_context" do
-          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGLOG] }
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
             expect(subject).to be_kind_of String

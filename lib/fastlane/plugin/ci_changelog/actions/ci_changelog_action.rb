@@ -4,7 +4,7 @@ module Fastlane
   module Actions
     module SharedValues
       CICL_CI = :CICL_CI
-      CICL_CHANGLOG = :CICL_CHANGLOG
+      CICL_CHANGELOG = :CICL_CHANGELOG
     end
 
     module CITypes
@@ -73,7 +73,7 @@ module Fastlane
         end
         commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
-        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGLOG, commits.to_json)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
       end
 
       def self.fetch_gitlab_changelog!
@@ -103,7 +103,7 @@ module Fastlane
         end
         commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
-        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGLOG, commits.to_json)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
       end
 
       def self.fetch_travis_changelog!
@@ -113,7 +113,7 @@ module Fastlane
       def self.output
         [
           ['CICL_CI', 'the name of CI'],
-          ['CICL_CHANGLOG', 'the json formatted changelog of CI']
+          ['CICL_CHANGELOG', 'the json formatted changelog of CI']
         ]
       end
 
