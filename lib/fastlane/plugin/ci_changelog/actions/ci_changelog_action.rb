@@ -43,16 +43,17 @@ module Fastlane
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
           build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
-          res = if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
-            RestClient::Request.execute(
-              method: :get,
-              url: build_url,
-              user: @params.fetch(:jenkins_user),
-              password: @params.fetch(:jenkins_token)
-            )
-          else
-            RestClient.get(build_url)
-          end
+          res =
+            if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
+              RestClient::Request.execute(
+                method: :get,
+                url: build_url,
+                user: @params.fetch(:jenkins_user),
+                password: @params.fetch(:jenkins_token)
+              )
+            else
+              RestClient.get(build_url)
+            end
 
           UI.message(res.body)
 
