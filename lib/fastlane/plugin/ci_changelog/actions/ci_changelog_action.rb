@@ -54,6 +54,8 @@ module Fastlane
             RestClient.get(build_url)
           end
 
+          UI.message(res.body)
+
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
 
