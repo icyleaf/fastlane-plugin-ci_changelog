@@ -31,7 +31,7 @@ module Fastlane
           fetch_gitlab_changelog!
         else
           Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::UNKOWEN)
-          UI.message('Sorry, It is not support yet, available is Jenkins/Gitlab CI/Travis')
+          UI.message('Sorry, No found CI variable, maybe not support yet, available is Jenkins/Gitlab CI')
         end
       end
 
@@ -53,8 +53,6 @@ module Fastlane
           else
             RestClient.get(build_url)
           end
-
-          UI.message(res.body)
 
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
