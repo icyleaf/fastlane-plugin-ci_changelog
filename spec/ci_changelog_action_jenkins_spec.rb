@@ -47,7 +47,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -59,7 +59,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -70,7 +70,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -82,7 +82,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -94,7 +94,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -106,7 +106,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -188,7 +188,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -200,7 +200,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -211,7 +211,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -223,7 +223,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -235,7 +235,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -247,7 +247,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -330,7 +330,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -342,7 +342,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -353,7 +353,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -365,7 +365,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -377,7 +377,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -389,7 +389,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -481,7 +481,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -493,7 +493,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -504,7 +504,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -516,7 +516,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -528,7 +528,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -540,7 +540,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -622,7 +622,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -634,7 +634,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -645,7 +645,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -657,7 +657,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -669,7 +669,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -681,7 +681,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -764,7 +764,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -776,7 +776,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
 
           it 'should be equal with jenkins' do
-            expect(subject).to eq 'jenkins'
+            expect(subject).to eq 'Jenkins'
           end
         end
 
@@ -787,7 +787,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -799,7 +799,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci branch' do
             expect(subject).to eq stub_build_branch
           end
         end
@@ -811,7 +811,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end
@@ -823,7 +823,7 @@ describe Fastlane::Actions::CiChangelogAction do
             expect(subject).to be_kind_of String
           end
 
-          it 'should be equal with jenkins' do
+          it 'should be equal with ci commit' do
             expect(subject).to eq stub_build_commit
           end
         end

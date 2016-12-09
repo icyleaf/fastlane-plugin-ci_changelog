@@ -12,9 +12,9 @@ module Fastlane
     end
 
     module CICLType
-      JENKINS = 'jenkins'
-      GITLAB_CI = 'gitlab ci'
-      TRAVIS_CI = 'travis ci'
+      JENKINS = 'Jenkins'
+      GITLAB_CI = 'Gitlab CI'
+      TRAVIS_CI = 'Travis CI'
       UNKOWEN = 'unkown'
     end
 
@@ -43,7 +43,7 @@ module Fastlane
 
       def self.print_table!
         changelog =
-          if Actions.lane_context[SharedValues::CICL_CHANGELOG].nil? or Actions.lane_context[SharedValues::CICL_CHANGELOG].empty?
+          if !Actions.lane_context[SharedValues::CICL_CHANGELOG].nil? or !Actions.lane_context[SharedValues::CICL_CHANGELOG].empty?
             JSON.parse(Actions.lane_context[SharedValues::CICL_CHANGELOG]).each_with_object([]) do |commit, obj|
               obj << commit.collect { |k, v| "#{k}: #{v}" }.join("\n")
             end.join("\n\n")

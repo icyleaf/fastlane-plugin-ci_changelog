@@ -92,7 +92,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -104,7 +104,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -115,7 +115,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -127,7 +127,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -139,7 +139,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
         end
       end
@@ -151,7 +151,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
         end
       end
@@ -234,7 +234,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -246,7 +246,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -257,7 +257,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -269,7 +269,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -281,7 +281,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
         end
       end
@@ -293,8 +293,20 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
+        end
+      end
+
+      describe "-> ENV['CICL_PROJECT_URL']" do
+        subject { ENV['CICL_PROJECT_URL'] }
+
+        it 'should be string' do
+          expect(subject).to be_kind_of String
+        end
+
+        it 'should be url' do
+          expect(subject =~ URI.regexp).to eq 0
         end
       end
 
@@ -372,7 +384,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -384,7 +396,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -395,7 +407,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -407,7 +419,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -419,7 +431,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
         end
       end
@@ -431,8 +443,20 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
+        end
+      end
+
+      describe "-> ENV['CICL_PROJECT_URL']" do
+        subject { ENV['CICL_PROJECT_URL'] }
+
+        it 'should be string' do
+          expect(subject).to be_kind_of String
+        end
+
+        it 'should be url' do
+          expect(subject =~ URI.regexp).to eq 0
         end
       end
 
@@ -511,7 +535,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -523,7 +547,7 @@ describe Fastlane::Actions::CiChangelogAction do
         end
 
         it 'should be equal with gitlab ci' do
-          expect(subject).to eq 'gitlab ci'
+          expect(subject).to eq 'Gitlab CI'
         end
       end
 
@@ -534,7 +558,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -546,7 +570,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci branch' do
           expect(subject).to eq stub_build_branch
         end
       end
@@ -558,7 +582,7 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
         end
       end
@@ -570,8 +594,20 @@ describe Fastlane::Actions::CiChangelogAction do
           expect(subject).to be_kind_of String
         end
 
-        it 'should be equal with jenkins' do
+        it 'should be equal with ci commit' do
           expect(subject).to eq stub_build_commit
+        end
+      end
+
+      describe "-> ENV['CICL_PROJECT_URL']" do
+        subject { ENV['CICL_PROJECT_URL'] }
+
+        it 'should be string' do
+          expect(subject).to be_kind_of String
+        end
+
+        it 'should be url' do
+          expect(subject =~ URI.regexp).to eq 0
         end
       end
 
