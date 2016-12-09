@@ -6,6 +6,12 @@ describe Fastlane::Actions::CiChangelogAction do
   end
 
   describe '#Integration' do
+    before do
+      ENV.delete('GITLAB_CI') if ENV['GITLAB_CI']
+      ENV.delete('JENKINS_URL') if ENV['JENKINS_URL']
+      ENV.delete('JENKINS_HOME') if ENV['JENKINS_HOME']
+    end
+
     it "should execute smooth without ci environment" do
       result = Fastlane::FastFile.new.parse("lane :test do
           ci_changelog

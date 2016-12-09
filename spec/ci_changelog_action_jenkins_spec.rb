@@ -4,9 +4,11 @@ describe Fastlane::Actions::CiChangelogAction do
   describe '#jenkins' do
     let(:stub_ci_url) { 'http://stub.ci.com' }
     let(:stub_project_url) { "#{stub_ci_url}/example-project" }
-    let(:stub_commit) { { date: Time.now.strftime('%F %T %z'), msg: "Testing..." } }
+    let(:stub_commit) { { date: Time.now.strftime('%F %T %z'), msg: "Testing...", author: { fullName: "icyleaf" }, authorEmail: "icyleaf.cn@gmail.com" } }
 
     let(:stub_build_number) { '10' }
+    let(:stub_build_branch) { 'develop' }
+    let(:stub_build_commit) { '45e3a61db94828b2b21a93fcabf278b6ad4d9dd8' }
     let(:stub_auth_user) { 'user' }
     let(:stub_auth_token_or_password) { 'token_or_password' }
 
@@ -14,6 +16,8 @@ describe Fastlane::Actions::CiChangelogAction do
       ENV['JENKINS_URL'] = stub_ci_url
       ENV['JOB_URL'] = stub_project_url
       ENV['BUILD_NUMBER'] = stub_build_number
+      ENV['GIT_BRANCH'] = stub_build_branch
+      ENV['GIT_COMMIT'] = stub_build_commit
     end
 
     context 'when request without user auth' do
@@ -35,6 +39,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -52,7 +152,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
@@ -80,6 +180,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -97,7 +293,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
@@ -126,6 +322,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -143,7 +435,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
@@ -181,6 +473,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -198,7 +586,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
@@ -226,6 +614,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -243,7 +727,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do
@@ -272,6 +756,102 @@ describe Fastlane::Actions::CiChangelogAction do
           end").runner.execute(:test)
         end
 
+        describe "-> ENV['CICL_CI']" do
+          subject { ENV['CICL_CI'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_CI]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CI] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq 'jenkins'
+          end
+        end
+
+        describe "-> ENV['CICL_BRANCH']" do
+          subject { ENV['CICL_BRANCH'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_BRANCH]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_BRANCH] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_branch
+          end
+        end
+
+        describe "-> ENV['CICL_COMMIT']" do
+          subject { ENV['CICL_COMMIT'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_COMMIT]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_COMMIT] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be equal with jenkins' do
+            expect(subject).to eq stub_build_commit
+          end
+        end
+
+        describe "-> ENV['CICL_PROJECT_URL']" do
+          subject { ENV['CICL_PROJECT_URL'] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
+        describe "-> lane_context[SharedValues::CICL_PROJECT_URL]" do
+          subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_PROJECT_URL] }
+
+          it 'should be string' do
+            expect(subject).to be_kind_of String
+          end
+
+          it 'should be url' do
+            expect(subject =~ URI.regexp).to eq 0
+          end
+        end
+
         describe "-> ENV['CICL_CHANGELOG']" do
           subject { ENV['CICL_CHANGELOG'] }
 
@@ -289,7 +869,7 @@ describe Fastlane::Actions::CiChangelogAction do
           end
         end
 
-        describe "-> Fastlane::Actions.lane_context" do
+        describe "-> lane_context[SharedValues::CICL_CHANGELOG]" do
           subject { Fastlane::Actions.lane_context[Fastlane::Actions::SharedValues::CICL_CHANGELOG] }
 
           it 'should be string' do

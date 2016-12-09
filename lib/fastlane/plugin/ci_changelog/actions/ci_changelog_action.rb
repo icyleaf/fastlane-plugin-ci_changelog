@@ -1,14 +1,18 @@
 require 'rest-client'
+require 'uri'
 
 module Fastlane
   module Actions
     module SharedValues
       CICL_CI = :CICL_CI
+      CICL_PROJECT_URL = :CICL_PROJECT_URL
+      CICL_BRANCH = :CICL_BRANCH
+      CICL_COMMIT = :CICL_COMMIT
       CICL_CHANGELOG = :CICL_CHANGELOG
     end
 
-    module CITypes
-      JENKINS = 'jenkens'
+    module CICLType
+      JENKINS = 'jenkins'
       GITLAB_CI = 'gitlab ci'
       TRAVIS_CI = 'travis ci'
       UNKOWEN = 'unkown'
@@ -20,17 +24,17 @@ module Fastlane
 
         @params = params
         if Helper::CiChangelogHelper.jenkins?
-          UI.message('detected env: jenkins')
-          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::JENKINS)
+          UI.message('detected: jenkins')
           Helper::CiChangelogHelper.determine_jenkins_options!(params)
           fetch_jenkins_changelog!
+          fetch_jenkins_env!
         elsif Helper::CiChangelogHelper.gitlab?
-          UI.message('detected env: gitlab ci')
-          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::GITLAB_CI)
+          UI.message('detected: gitlab ci')
           Helper::CiChangelogHelper.determine_gitlab_options!(params)
           fetch_gitlab_changelog!
+          fetch_gitlab_env!
         else
-          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CITypes::UNKOWEN)
+          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::UNKOWEN)
           UI.message('Sorry, No found CI variable, maybe not support yet, available is Jenkins/Gitlab CI')
         end
       end
@@ -55,8 +59,6 @@ module Fastlane
               RestClient.get(build_url)
             end
 
-          UI.message(res.body)
-
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
 
@@ -75,6 +77,16 @@ module Fastlane
         commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
+      end
+
+      def self.fetch_jenkins_env!
+        branch = ENV['GIT_BRANCH'] || ENV['SVN_BRANCH']
+        # branch = branch.split('/')[1..-1].join('/') if branch.include?('/') # wanto to fix origin/xxxx, ignore for now
+
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::JENKINS)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_BRANCH, branch)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_COMMIT, ENV['GIT_COMMIT'])
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_PROJECT_URL, ENV['JOB_URL'])
       end
 
       def self.fetch_gitlab_changelog!
@@ -102,28 +114,47 @@ module Fastlane
 
           break if fetch_correct_changelog || build_number <= 0
         end
-        commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
       end
 
-      def self.fetch_travis_changelog!
-        # TODO
+      def self.fetch_gitlab_env!
+        build_url =
+          if ENV['CI_PROJECT_URL']
+            "#{ENV['CI_PROJECT_URL']}/builds/#{ENV['CI_BUILD_ID']}"
+          else
+            uri = URI.parse(ENV['CI_BUILD_REPO'])
+            ci_project_namespace = ENV['CI_PROJECT_DIR'].split('/')[-2..-1].join('/')
+            url_port = uri.port == 80 ? '' : ":#{uri.port}"
+
+            "#{uri.scheme}://#{uri.host}#{url_port}/#{ci_project_namespace}/builds/#{ENV['CI_BUILD_ID']}"
+          end
+
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::GITLAB_CI)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_BRANCH, ENV['CI_BUILD_REF_NAME'])
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_COMMIT, ENV['CI_BUILD_REF'])
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_PROJECT_URL, build_url)
       end
 
       def self.output
         [
-          ['CICL_CI', 'the name of CI'],
-          ['CICL_CHANGELOG', 'the json formatted changelog of CI']
+          [SharedValues::CICL_CI.to_s, 'the name of CI'],
+          [SharedValues::CICL_BRANCH.to_s, 'the name of CVS branch'],
+          [SharedValues::CICL_COMMIT.to_s, 'the last hash of CVS commit'],
+          [SharedValues::CICL_CHANGELOG.to_s, 'the json formatted changelog of CI (datetime, message, author and email)']
         ]
       end
 
       def self.description
-        "Automate generate changelog between previous build failed and the latest commit of scm in CI"
+        "Automate generate changelog between previous build failed and the latest commit of scm in CI."
+      end
+
+      def self.details
+        "availabled with jenkins, gitlab ci, more support is comming soon."
       end
 
       def self.authors
-        ["icyleaf"]
+        ["icyleaf <icyleaf.cn@gmail.com>"]
       end
 
       def self.available_options
@@ -152,7 +183,7 @@ module Fastlane
       end
 
       def self.is_supported?(platform)
-        [:ios, :android, :mac].include? platform
+        true
       end
     end
   end

@@ -17,7 +17,9 @@ module Fastlane
         commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
             date: item['date'],
-            message: item['msg']
+            message: item['msg'],
+            author: item['author']['fullName'].strip,
+            email: item['authorEmail'].strip
           })
         end
 
@@ -32,7 +34,9 @@ module Fastlane
         json = JSON.parse(body)
         commit = {
           date: json['commit']['created_at'],
-          message: json['commit']['message'].strip
+          message: json['commit']['message'].strip,
+          author: json['commit']['author_name'].strip,
+          email: json['commit']['author_email'].strip
         }
 
         if json['status'] == 'success'

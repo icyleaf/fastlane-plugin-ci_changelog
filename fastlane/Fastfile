@@ -1,7 +1,7 @@
 lane :test do
   ci_changelog
 
-  ci_name = ENV['CICL_CI']
+  puts ENV['CICL_CI']
   ci_changelog = JSON.dump(ENV['CICL_CHANGELOG'])
   ci_changelog.each do |date, message|
     # do something
