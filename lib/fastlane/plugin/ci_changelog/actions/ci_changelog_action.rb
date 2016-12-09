@@ -20,7 +20,7 @@ module Fastlane
 
     class CiChangelogAction < Action
       def self.run(params)
-        return UI.message('Skip, Not detect CI environment') unless FastlaneCore::Helper.is_ci?
+        return UI.message('No detect CI environment') unless FastlaneCore::Helper.is_ci?
 
         @params = params
         if Helper::CiChangelogHelper.jenkins?
@@ -37,6 +37,34 @@ module Fastlane
           Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::UNKOWEN)
           UI.message('Sorry, No found CI variable, maybe not support yet, available is Jenkins/Gitlab CI')
         end
+
+        print_table! unless params[:silent]
+      end
+
+      def self.print_table!
+        changelog =
+          if Actions.lane_context[SharedValues::CICL_CHANGELOG].nil? or Actions.lane_context[SharedValues::CICL_CHANGELOG].empty?
+            JSON.parse(Actions.lane_context[SharedValues::CICL_CHANGELOG]).each_with_object([]) do |commit, obj|
+              obj << commit.collect { |k, v| "#{k}: #{v}" }.join("\n")
+            end.join("\n\n")
+          else
+            'No found'
+          end
+
+        params = {
+          title: "Summary for ci_changelog #{CiChangelog::VERSION}".green,
+          rows: {
+            ci: Actions.lane_context[SharedValues::CICL_CI],
+            project_url: Actions.lane_context[SharedValues::CICL_PROJECT_URL],
+            branch: Actions.lane_context[SharedValues::CICL_BRANCH],
+            commit: Actions.lane_context[SharedValues::CICL_COMMIT],
+            changelog: changelog
+          }
+        }
+
+        puts ""
+        puts Terminal::Table.new(params)
+        puts ""
       end
 
       def self.fetch_jenkins_changelog!
@@ -81,7 +109,7 @@ module Fastlane
 
       def self.fetch_jenkins_env!
         branch = ENV['GIT_BRANCH'] || ENV['SVN_BRANCH']
-        # branch = branch.split('/')[1..-1].join('/') if branch.include?('/') # wanto to fix origin/xxxx, ignore for now
+        branch = branch.split('/')[1..-1].join('/') if branch.include?('/') # fix origin/xxxx
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::JENKINS)
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_BRANCH, branch)
@@ -159,6 +187,12 @@ module Fastlane
 
       def self.available_options
         [
+          FastlaneCore::ConfigItem.new(key: :silent,
+                                  env_name: "CICL_SILENT",
+                               description: "Hide all information of print table",
+                                  optional: true,
+                             default_value: false,
+                                 is_string: false),
           FastlaneCore::ConfigItem.new(key: :jenkins_user,
                                   env_name: "CICL_CHANGELOG_JENKINS_USER",
                                description: "the user of jenkins if enabled security",
