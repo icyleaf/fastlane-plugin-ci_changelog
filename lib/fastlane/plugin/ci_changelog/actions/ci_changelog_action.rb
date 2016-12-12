@@ -42,13 +42,14 @@ module Fastlane
       end
 
       def self.print_table!
+        data = Actions.lane_context[SharedValues::CICL_CHANGELOG]
         changelog =
-          if !Actions.lane_context[SharedValues::CICL_CHANGELOG].nil? or !Actions.lane_context[SharedValues::CICL_CHANGELOG].empty?
-            JSON.parse(Actions.lane_context[SharedValues::CICL_CHANGELOG]).each_with_object([]) do |commit, obj|
+          if !data.nil? or !data.empty? or data.size != 0
+            JSON.parse(data).each_with_object([]) do |commit, obj|
               obj << commit.collect { |k, v| "#{k}: #{v}" }.join("\n")
             end.join("\n\n")
           else
-            'No found'
+            'no change'
           end
 
         params = {
