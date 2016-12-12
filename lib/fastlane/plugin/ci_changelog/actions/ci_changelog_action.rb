@@ -69,8 +69,6 @@ module Fastlane
 
       def self.fetch_jenkins_changelog!
         commits = []
-        loop_count = 1
-        fetch_correct_changelog = false
 
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
@@ -89,20 +87,17 @@ module Fastlane
 
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
-
-            if build_status == true
-              commits = data
-              fetch_correct_changelog = true
-            else
-              commits = commits.empty? ? data : commits.concat(data)
-              loop_count += 1
-            end
+            commits.concat(data)
+            break if build_status == true
           end
+
           build_number -= 1
 
-          break if fetch_correct_changelog || build_number <= 0
+          break if build_number <= 0
         end
-        commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
+
+        # NOTE: Auto detect the range changelog of build fail.
+        # commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
       end
