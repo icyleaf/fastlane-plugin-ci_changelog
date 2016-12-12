@@ -14,6 +14,7 @@ module Fastlane
 
       def self.dump_jenkin_commits(body)
         json = JSON.parse(body)
+        # TODO: It must use reverse_each to correct the changelog
         commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
             date: item['date'],
