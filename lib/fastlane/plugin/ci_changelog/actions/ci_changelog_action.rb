@@ -86,7 +86,8 @@ module Fastlane
               RestClient.get(build_url)
             end
 
-          if res.code == 200
+          # NOTE: break out of loop if build setted keep max builds count
+          if [200, 404].include?(res.code)
             build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
             commits.concat(data)
             break if build_status == true
