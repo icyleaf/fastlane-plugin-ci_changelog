@@ -73,29 +73,33 @@ module Fastlane
 
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
-          build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
-          res =
-            if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
-              RestClient::Request.execute(
-                method: :get,
-                url: build_url,
-                user: @params.fetch(:jenkins_user),
-                password: @params.fetch(:jenkins_token)
-              )
-            else
-              RestClient.get(build_url)
+          begin
+            build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
+            res =
+              if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
+                RestClient::Request.execute(
+                  method: :get,
+                  url: build_url,
+                  user: @params.fetch(:jenkins_user),
+                  password: @params.fetch(:jenkins_token)
+                )
+              else
+                RestClient.get(build_url)
+              end
+
+            if res.code == 200
+              build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
+              commits.concat(data)
+              break if build_status == true
             end
 
-          # NOTE: break out of loop if build setted keep max builds count
-          if [200, 404].include?(res.code)
-            build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body)
-            commits.concat(data)
-            break if build_status == true
+            build_number -= 1
+
+            break if build_number <= 0
+          rescue
+            # NOTE: break out of loop if build setted keep max builds count
+            break
           end
-
-          build_number -= 1
-
-          break if build_number <= 0
         end
 
         # NOTE: Auto detect the range changelog of build fail.
