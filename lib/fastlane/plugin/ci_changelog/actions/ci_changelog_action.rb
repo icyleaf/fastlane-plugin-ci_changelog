@@ -1,4 +1,4 @@
-require 'rest-client'
+require 'http'
 require 'uri'
 
 module Fastlane
@@ -77,14 +77,10 @@ module Fastlane
             build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
             res =
               if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
-                RestClient::Request.execute(
-                  method: :get,
-                  url: build_url,
-                  user: @params.fetch(:jenkins_user),
-                  password: @params.fetch(:jenkins_token)
-                )
+                HTTP.basic_auth(user: @params.fetch(:jenkins_user), pass: @params.fetch(:jenkins_token))
+                    .get(build_url)
               else
-                RestClient.get(build_url)
+                HTTP.get(build_url)
               end
 
             if res.code == 200
@@ -126,7 +122,7 @@ module Fastlane
         build_number = ENV['CI_BUILD_ID'].to_i
         loop do
           build_url = "#{@params[:gitlab_url]}/api/v3/projects/#{ENV['CI_PROJECT_ID']}/builds/#{build_number}"
-          res = RestClient.get(build_url, { 'PRIVATE-TOKEN' => @params[:gitlab_private_token] })
+          res = HTTP.headers('PRIVATE-TOKEN' => @params[:gitlab_private_token]).get(build_url)
 
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_gitlab_commits(res.body)

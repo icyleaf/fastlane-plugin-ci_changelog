@@ -12,6 +12,7 @@ describe Fastlane::Actions::CiChangelogAction do
     let(:stub_build_commit) { '45e3a61db94828b2b21a93fcabf278b6ad4d9dd8' }
 
     before do
+      ENV['FASTLANE_OPT_OUT_CRASH_REPORTING'] = "1" # disable crash reporting
       ENV['GITLAB_CI'] = 'true'
       ENV['CI_PROJECT_ID'] = stub_project_id
       ENV['CI_BUILD_ID'] = stub_build_id

@@ -62,13 +62,14 @@ module Fastlane
       end
 
       def self.determine_jenkins_basic_auth?
-        res = RestClient.get("#{ENV['JENKINS_URL']}/api/json")
+        res = HTTP.get("#{ENV['JENKINS_URL']}/api/json")
         if res.code == 200 && res.headers[:content_type].include?('json')
           return false
         else
           return true
         end
-      rescue RestClient::Forbidden
+      # rescue RestClient::Forbidden
+      rescue HTTP::Error
         return true
       end
 
