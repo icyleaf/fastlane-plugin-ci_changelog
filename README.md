@@ -24,7 +24,7 @@ Automate generate changelog between previous and the latest commit of scm during
 
 Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
 
-```bash
+```
 $ fastlane test
 [10:56:15]: Driving the lane 'test' 🚀
 [10:56:15]: --------------------------
