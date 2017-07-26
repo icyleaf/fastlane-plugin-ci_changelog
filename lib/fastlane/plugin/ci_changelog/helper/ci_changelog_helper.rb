@@ -69,7 +69,9 @@ module Fastlane
           return true
         end
       # rescue RestClient::Forbidden
-      rescue HTTP::Error
+      rescue Addressable::URI::InvalidURIError
+        return false
+      rescue Exception
         return true
       end
 
