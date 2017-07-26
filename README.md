@@ -24,6 +24,48 @@ Automate generate changelog between previous and the latest commit of scm during
 
 Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
 
+```bash
+$ fastlane test
+[10:56:15]: Driving the lane 'test' 🚀
+[10:56:15]: --------------------------
+[10:56:15]: --- Step: ci_changelog ---
+[10:56:15]: --------------------------
+[10:56:15]: detected: gitlab ci
+
++-------------+----------------------------------------------+
+|               Summary for ci_changelog 0.4.1               |
++-------------+----------------------------------------------+
+| ci          | Gitlab CI                                    |
+| project_url | http://stub.ci.com/icyleaf/project/builds/10 |
+| branch      | develop                                      |
+| commit      | 45e3a61db94828b2b21a93fcabf278b6ad4d9dd8     |
+| changelog   | date: 2017-07-26T10:56:15+08:00              |
+|             | message: Testing..(10)                       |
+|             | author: icyleaf                              |
+|             | email: icyleaf.cn@gmail.com                  |
+|             |                                              |
+|             | date: 2017-07-26T10:56:15+08:00              |
+|             | message: Testing..(9)                        |
+|             | author: icyleaf                              |
+|             | email: icyleaf.cn@gmail.com                  |
+|             |                                              |
+|             | date: 2017-07-26T10:56:15+08:00              |
+|             | message: Testing..(8)                        |
+|             | author: icyleaf                              |
+|             | email: icyleaf.cn@gmail.com                  |
+|             |                                              |
+|             | date: 2017-07-26T10:56:15+08:00              |
+|             | message: Testing..(7)                        |
+|             | author: icyleaf                              |
+|             | email: icyleaf.cn@gmail.com                  |
+|             |                                              |
+|             | date: 2017-07-26T10:56:15+08:00              |
+|             | message: Testing..(6)                        |
+|             | author: icyleaf                              |
+|             | email: icyleaf.cn@gmail.com                  |
++-------------+----------------------------------------------+
+```
+
 ## Run tests for this plugin
 
 To run both the tests, and code style validation, run
