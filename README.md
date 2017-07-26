@@ -20,6 +20,57 @@ Automate generate changelog between previous and the latest commit of scm during
 - [x] Gitlab CI
 - [ ] Travis CI
 
+## Configuration
+
+```
+$ fastlane action ci_changelog
++------------------------------+---------+--------------+
+|                     Used plugins                      |
++------------------------------+---------+--------------+
+| Plugin                       | Version | Action       |
++------------------------------+---------+--------------+
+| fastlane-plugin-ci_changelog | 0.4.1   | ci_changelog |
++------------------------------+---------+--------------+
+
+Loading documentation for ci_changelog:
+
++-----------------------------------------------------------------------------------------------+
+|                                         ci_changelog                                          |
++-----------------------------------------------------------------------------------------------+
+| Automate generate changelog between previous build failed and the latest commit of scm in CI. |
+|                                                                                               |
+| availabled with jenkins, gitlab ci, more support is comming soon.                             |
+|                                                                                               |
+| Created by icyleaf <icyleaf.cn@gmail.com>                                                     |
++-----------------------------------------------------------------------------------------------+
+
++----------------------+----------------------------------------------+-------------------------------------+---------+
+|                                                ci_changelog Options                                                 |
++----------------------+----------------------------------------------+-------------------------------------+---------+
+| Key                  | Description                                  | Env Var                             | Default |
++----------------------+----------------------------------------------+-------------------------------------+---------+
+| silent               | Hide all information of print table          | CICL_SILENT                         | false   |
+| jenkins_user         | the user of jenkins if enabled security      | CICL_CHANGELOG_JENKINS_USER         |         |
+| jenkins_token        | the token or password of jenkins if enabled  | CICL_CHANGELOG_JENKINS_TOKEN        |         |
+|                      | security                                     |                                     |         |
+| gitlab_url           | the url of gitlab                            | CICL_CHANGELOG_GITLAB_URL           |         |
+| gitlab_private_token | the private token of gitlab                  | CICL_CHANGELOG_GITLAB_PRIVATE_TOKEN |         |
++----------------------+----------------------------------------------+-------------------------------------+---------+
+
++----------------+--------------------------------------------------------------------------+
+|                               ci_changelog Output Variables                               |
++----------------+--------------------------------------------------------------------------+
+| Key            | Description                                                              |
++----------------+--------------------------------------------------------------------------+
+| CICL_CI        | the name of CI                                                           |
+| CICL_BRANCH    | the name of CVS branch                                                   |
+| CICL_COMMIT    | the last hash of CVS commit                                              |
+| CICL_CHANGELOG | the json formatted changelog of CI (datetime, message, author and email) |
++----------------+--------------------------------------------------------------------------+
+Access the output values using `lane_context[SharedValues::VARIABLE_NAME]`
+
+```
+
 ## Example
 
 Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
