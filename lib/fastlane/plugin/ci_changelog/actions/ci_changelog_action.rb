@@ -15,7 +15,7 @@ module Fastlane
       JENKINS = 'Jenkins'
       GITLAB_CI = 'Gitlab CI'
       TRAVIS_CI = 'Travis CI'
-      UNKOWEN = 'unkown'
+      UNKNOWN = 'Unknown'
     end
 
     class CiChangelogAction < Action
@@ -34,7 +34,7 @@ module Fastlane
           fetch_gitlab_changelog!
           fetch_gitlab_env!
         else
-          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::UNKOWEN)
+          Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::UNKNOWN)
           UI.message('Sorry, No found CI variable, maybe not support yet, available is Jenkins/Gitlab CI')
         end
 
