@@ -36,7 +36,9 @@ module Fastlane
       def self.dump_gitlab_commits(body)
         json = JSON.parse(body)
         commit = {
+          id: json['commit']['id'],
           date: json['commit']['created_at'],
+          title: json['commit']['title'].strip,
           message: json['commit']['message'].strip,
           author: json['commit']['author_name'].strip,
           email: json['commit']['author_email'].strip
