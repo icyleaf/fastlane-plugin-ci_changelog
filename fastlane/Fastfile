@@ -3,7 +3,12 @@ lane :test do
 
   puts ENV['CICL_CI']
   ci_changelog = JSON.dump(ENV['CICL_CHANGELOG'])
-  ci_changelog.each do |date, message|
-    # do something
+  ci_changelog.each do |changelog|
+    puts changelog["id"]
+    puts changelog["date"]
+    puts changelog["title"]
+    puts changelog["message"]
+    puts changelog["author"]
+    puts changelog["email"]
   end
 end
