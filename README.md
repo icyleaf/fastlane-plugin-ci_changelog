@@ -83,38 +83,27 @@ $ fastlane test
 [10:56:15]: --------------------------
 [10:56:15]: detected: gitlab ci
 
-+-------------+----------------------------------------------+
-|               Summary for ci_changelog 0.4.1               |
-+-------------+----------------------------------------------+
-| ci          | Gitlab CI                                    |
-| project_url | http://stub.ci.com/icyleaf/project/builds/10 |
-| branch      | develop                                      |
-| commit      | 45e3a61db94828b2b21a93fcabf278b6ad4d9dd8     |
-| changelog   | date: 2017-07-26T10:56:15+08:00              |
-|             | message: Testing..(10)                       |
-|             | author: icyleaf                              |
-|             | email: icyleaf.cn@gmail.com                  |
-|             |                                              |
-|             | date: 2017-07-26T10:56:15+08:00              |
-|             | message: Testing..(9)                        |
-|             | author: icyleaf                              |
-|             | email: icyleaf.cn@gmail.com                  |
-|             |                                              |
-|             | date: 2017-07-26T10:56:15+08:00              |
-|             | message: Testing..(8)                        |
-|             | author: icyleaf                              |
-|             | email: icyleaf.cn@gmail.com                  |
-|             |                                              |
-|             | date: 2017-07-26T10:56:15+08:00              |
-|             | message: Testing..(7)                        |
-|             | author: icyleaf                              |
-|             | email: icyleaf.cn@gmail.com                  |
-|             |                                              |
-|             | date: 2017-07-26T10:56:15+08:00              |
-|             | message: Testing..(6)                        |
-|             | author: icyleaf                              |
-|             | email: icyleaf.cn@gmail.com                  |
-+-------------+----------------------------------------------+
++-------------+------------------------------------------+
+|             Summary for ci_changelog 0.5.0             |
++-------------+------------------------------------------+
+| ci          | Jenkins                                  |
+| project_url | http://stub.ci.com/example-project       |
+| branch      | develop                                  |
+| commit      | 45e3a61db94828b2b21a93fcabf278b6ad4d9dd8 |
+| changelog   | id: 1234                                 |
+|             | date: 2017-11-14 16:07:08 +0800          |
+|             | title: Testing ...                       |
+|             | message: Details of commit               |
+|             | author: icyleaf                          |
+|             | email: icyleaf.cn@gmail.com              |
+|             |                                          |
+|             | id: 1234                                 |
+|             | date: 2017-11-14 16:07:08 +0800          |
+|             | title: Testing ...                       |
+|             | message: Details of commit               |
+|             | author: icyleaf                          |
+|             | email: icyleaf.cn@gmail.com              |
++-------------+------------------------------------------+
 ```
 
 ## Run tests for this plugin
