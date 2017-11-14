@@ -17,8 +17,10 @@ module Fastlane
         # TODO: It must use reverse_each to correct the changelog
         commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
+            id: item['commitId'],
             date: item['date'],
-            message: item['msg'],
+            title: item['msg'],
+            message: item['comment'],
             author: item['author']['fullName'].strip,
             email: item['authorEmail'].strip
           })
