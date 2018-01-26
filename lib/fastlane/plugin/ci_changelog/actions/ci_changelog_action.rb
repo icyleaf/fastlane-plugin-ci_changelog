@@ -39,6 +39,8 @@ module Fastlane
         end
 
         print_table! unless params[:silent]
+
+        Actions.lane_context[SharedValues::CICL_CHANGELOG]
       end
 
       def self.print_table!
@@ -49,7 +51,7 @@ module Fastlane
               obj << commit.collect { |k, v| "#{k}: #{v}" }.join("\n")
             end.join("\n\n")
           else
-            'no change'
+            'No change'
           end
 
         params = {
@@ -179,7 +181,7 @@ module Fastlane
       end
 
       def self.authors
-        ["icyleaf <icyleaf.cn@gmail.com>"]
+        ["icyleaf"]
       end
 
       def self.available_options

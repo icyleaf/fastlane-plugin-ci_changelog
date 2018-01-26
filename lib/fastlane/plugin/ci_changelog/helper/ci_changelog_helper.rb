@@ -19,8 +19,8 @@ module Fastlane
           obj.push({
             id: item['commitId'],
             date: item['date'],
-            title: item['msg'],
-            message: item['comment'],
+            title: item['msg'].strip,
+            message: item['comment'].strip,
             author: item['author']['fullName'].strip,
             email: item['authorEmail'].strip
           })
