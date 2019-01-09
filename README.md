@@ -12,7 +12,7 @@ fastlane add_plugin ci_changelog
 
 ## About ci_changelog
 
-Automate generate changelog between previous and the latest commit of scm during the ci system
+Automate generate changelog between previous and the latest commit of SCM during the CI services.
 
 ### Available CI system:
 
