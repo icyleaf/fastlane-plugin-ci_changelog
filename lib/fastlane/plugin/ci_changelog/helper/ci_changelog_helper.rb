@@ -12,10 +12,15 @@ module Fastlane
         git_logs.split("\n")
       end
 
-      def self.dump_jenkin_commits(body)
+      def self.dump_jenkin_commits(body, branch)
         json = JSON.parse(body)
+        result = json['result'] == 'SUCCESS' ? true : false
+
+        # return if previous build do not equal to current build branch.
+        return [result, []] unless jenkins_use_same_branch?(json, branch)
+
         # TODO: It must use reverse_each to correct the changelog
-        commit = json['changeSet']['items'].each_with_object([]) do |item, obj|
+        commits = json['changeSet']['items'].each_with_object([]) do |item, obj|
           obj.push({
             id: item['commitId'],
             date: item['date'],
@@ -26,11 +31,7 @@ module Fastlane
           })
         end
 
-        if json['result'] == 'SUCCESS'
-          [true, commit]
-        else
-          [false, commit]
-        end
+        [result, commits]
       end
 
       def self.dump_gitlab_commits(body)
@@ -77,6 +78,17 @@ module Fastlane
         return false
       rescue Exception
         return true
+      end
+
+      def self.jenkins_use_same_branch?(json, name)
+        json['actions'].each do |item|
+          if revision = item['lastBuiltRevision']
+            branches = revision['branch'].map {|b| b['name']}
+            return branches.include?(name)
+          end
+        end
+
+        false
       end
 
       def self.store_sharedvalue(key, value)

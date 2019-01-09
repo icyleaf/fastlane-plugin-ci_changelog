@@ -36,21 +36,42 @@ def stub_jenkins_auth(user: nil, token_or_password: nil)
   end
 end
 
-def stub_jenkins_project(count, commits, failure_number: nil, user: nil, token_or_password: nil)
+def stub_jenkins_project(count, commits, branch_number: nil, branch_name: nil, failure_number: nil, user: nil, token_or_password: nil)
   failure_number ||= count
-
-  template_url = Addressable::Template.new("#{ENV['JOB_URL']}/{id}/api/json")
   count.downto(failure_number).each do |i|
+    template_url = Addressable::Template.new("#{ENV['JOB_URL']}/#{i}/api/json")
     mock = stub_request(:get, template_url)
     if user && token_or_password
       mock = mock.with(basic_token_header(user, token_or_password))
     end
 
+    branch_data = [{name: ENV['GIT_BRANCH']}]
+    if branch_number && branch_name
+      if i == branch_number
+        branch_data = case branch_name
+                      when String
+                        [{name: branch_name}]
+                      when Array
+                        branch_name.map {|n| {name: n}}
+                      else
+                        raise 'Only accepts String and Array'
+                      end
+      end
+    end
+
+    result = (i == failure_number) ? 'SUCCESS' : 'FAILURE'
     mock.to_return(
       status: 200,
       headers: { 'Content-Type' => 'application/json;charset=UTF-8' },
       body: {
-        result: i == failure_number ? 'SUCCESS' : 'FAILURE',
+        result: result,
+        actions: [
+          {
+            lastBuiltRevision: {
+              branch: branch_data
+            }
+          }
+        ],
         changeSet: {
           items: commits
         }
