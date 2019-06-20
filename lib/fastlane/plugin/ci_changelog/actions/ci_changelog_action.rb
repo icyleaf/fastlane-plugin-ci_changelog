@@ -71,15 +71,13 @@ module Fastlane
       end
 
       def self.fetch_jenkins_changelog!
-        commits = []
+        changelog = []
 
-        first_build = true
         build_branch = ENV['GIT_BRANCH']
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
           begin
-            build_url = "#{ENV['JOB_URL']}/#{build_number}/api/json"
-            puts build_url
+            build_url = "#{ENV['JOB_URL']}#{build_number}/api/json"
             res =
               if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
                 HTTP.basic_auth(user: @params.fetch(:jenkins_user), pass: @params.fetch(:jenkins_token))
@@ -88,24 +86,17 @@ module Fastlane
                 HTTP.get(build_url)
               end
 
-            puts res.body
-
             if res.code == 200
-              build_status, data = Helper::CiChangelogHelper.dump_jenkin_commits(res.body, build_branch)
-              if first_build && build_status
-                commits.concat(data) unless data.empty?
-              else
-                commits.concat(data) unless data.empty?
-              end
+              build_status, data = Helper::CiChangelogHelper.dump_jenkins_commits(res.body, build_branch)
+              changelog.concat(data) unless data.empty?
 
               break if build_status == true
             end
 
             build_number -= 1
-            first_build = false
 
             break if build_number <= 0
-          rescue
+          rescue HTTP::Error
             # NOTE: break out of loop if build setted keep max builds count
             break
           end
@@ -114,7 +105,7 @@ module Fastlane
         # NOTE: Auto detect the range changelog of build fail.
         # commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
 
-        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, changelog.to_json)
       end
 
       def self.fetch_jenkins_env!

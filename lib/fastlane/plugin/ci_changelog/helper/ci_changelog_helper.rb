@@ -12,7 +12,7 @@ module Fastlane
         git_logs.split("\n")
       end
 
-      def self.dump_jenkin_commits(body, branch)
+      def self.dump_jenkins_commits(body, branch)
         json = JSON.parse(body)
         result = json['result'] == 'SUCCESS' ? true : false
 
@@ -81,14 +81,16 @@ module Fastlane
       end
 
       def self.jenkins_use_same_branch?(json, name)
+        same_branch = false
         json['actions'].each do |item|
           if revision = item['lastBuiltRevision']
-            branches = revision['branch'].map {|b| b['name']}
-            return branches.include?(name)
+            revision['branch'].each do |branch|
+              same_branch = true if branch['name'].end_with?('master')
+            end
           end
         end
 
-        false
+        same_branch
       end
 
       def self.store_sharedvalue(key, value)
