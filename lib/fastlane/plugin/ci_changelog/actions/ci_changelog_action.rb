@@ -23,17 +23,15 @@ module Fastlane
         return UI.message('No detect CI environment') unless FastlaneCore::Helper.is_ci?
 
         @params = params
-        verbose = @params[:verbose]
-
         if Helper::CiChangelogHelper.jenkins?
           UI.message('detected: jenkins')
           Helper::CiChangelogHelper.determine_jenkins_options!(params)
-          fetch_jenkins_changelog!(verbose)
+          fetch_jenkins_changelog!
           fetch_jenkins_env!
         elsif Helper::CiChangelogHelper.gitlab?
           UI.message('detected: gitlab ci')
           Helper::CiChangelogHelper.determine_gitlab_options!(params)
-          fetch_gitlab_changelog!(verbose)
+          fetch_gitlab_changelog!
           fetch_gitlab_env!
         else
           Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::UNKNOWN)
@@ -72,7 +70,7 @@ module Fastlane
         puts ""
       end
 
-      def self.fetch_jenkins_changelog!(verbose = false)
+      def self.fetch_jenkins_changelog!
         changelog = []
 
         build_branch = ENV['GIT_BRANCH']
@@ -90,12 +88,10 @@ module Fastlane
 
             if res.code == 200
               build_status, data = Helper::CiChangelogHelper.dump_jenkins_commits(res.body, build_branch)
-
-              if verbose
-                UI.verbose("Fetching changelog #{build_url}")
-                UI.verbose(" -> Status #{build_status}")
-                UI.verbose(" -> Changelog #{data}")
-              end
+              UI.verbose("Fetching changelog #{build_url}")
+              UI.verbose("- Branch #{build_branch}")
+              UI.verbose("- Status #{build_status}")
+              UI.verbose("- Changelog #{data}")
 
               changelog.concat(data) unless data.empty?
 
@@ -127,7 +123,7 @@ module Fastlane
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_PROJECT_URL, ENV['JOB_URL'])
       end
 
-      def self.fetch_gitlab_changelog!(verbose = false)
+      def self.fetch_gitlab_changelog!
         commits = []
         loop_count = 1
         fetch_correct_changelog = false
@@ -139,11 +135,9 @@ module Fastlane
 
           if res.code == 200
             build_status, data = Helper::CiChangelogHelper.dump_gitlab_commits(res.body)
-            if verbose
-              UI.verbose("Fetching changelog #{build_url}")
-              UI.verbose(" -> Status #{build_status}")
-              UI.verbose(" -> Changelog #{data}")
-            end
+            UI.verbose("Fetching changelog #{build_url}")
+            UI.verbose("- Status #{build_status}")
+            UI.verbose("- Changelog #{data}")
 
             if build_status == true
               commits = data if commits.empty?
@@ -202,12 +196,6 @@ module Fastlane
 
       def self.available_options
         [
-          FastlaneCore::ConfigItem.new(key: :verbose,
-                                  env_name: "CICL_VERBOSE",
-                               description: "print each changelogs of build",
-                                  optional: true,
-                             default_value: false,
-                                 is_string: false),
           FastlaneCore::ConfigItem.new(key: :silent,
                                   env_name: "CICL_SILENT",
                                description: "Hide all information of print table",

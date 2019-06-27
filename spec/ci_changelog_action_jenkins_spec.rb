@@ -4,7 +4,7 @@ require 'securerandom'
 describe Fastlane::Actions::CiChangelogAction do
   describe '#jenkins' do
     let(:stub_ci_url) { 'http://stub.ci.com' }
-    let(:stub_project_url) { "#{stub_ci_url}/example-project" }
+    let(:stub_project_url) { "#{stub_ci_url}/example-project/" }
     let(:stub_commit) { { commitId: SecureRandom.uuid, date: Time.now.strftime('%F %T %z'), msg: "Testing ...", comment: "Details of commit",  author: { fullName: "icyleaf" }, authorEmail: "icyleaf.cn@gmail.com" } }
 
     let(:stub_build_number) { '10' }

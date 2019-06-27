@@ -22,7 +22,7 @@ Automate generate changelog between previous and the latest commit of SCM during
 
 ## Configuration
 
-```
+```text
 $ fastlane action ci_changelog
 +------------------------------+---------+--------------+
 |                     Used plugins                      |
@@ -68,7 +68,6 @@ Loading documentation for ci_changelog:
 | CICL_CHANGELOG | the json formatted changelog of CI (datetime, message, author and email) |
 +----------------+--------------------------------------------------------------------------+
 Access the output values using `lane_context[SharedValues::VARIABLE_NAME]`
-
 ```
 
 ## Example

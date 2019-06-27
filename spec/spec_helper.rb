@@ -39,7 +39,7 @@ end
 def stub_jenkins_project(count, commits, branch_number: nil, branch_name: nil, failure_number: nil, user: nil, token_or_password: nil)
   failure_number ||= count
   count.downto(failure_number).each do |i|
-    template_url = Addressable::Template.new("#{ENV['JOB_URL']}/#{i}/api/json")
+    template_url = Addressable::Template.new("#{ENV['JOB_URL']}#{i}/api/json")
     mock = stub_request(:get, template_url)
     if user && token_or_password
       mock = mock.with(basic_token_header(user, token_or_password))

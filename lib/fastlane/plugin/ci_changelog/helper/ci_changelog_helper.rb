@@ -85,7 +85,7 @@ module Fastlane
         json['actions'].each do |item|
           if revision = item['lastBuiltRevision']
             revision['branch'].each do |branch|
-              same_branch = true if branch['name'].end_with?('master')
+              same_branch = true if branch['name'].end_with?(name)
             end
           end
         end
