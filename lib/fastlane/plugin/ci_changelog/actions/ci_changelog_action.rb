@@ -76,8 +76,10 @@ module Fastlane
         build_branch = ENV['GIT_BRANCH']
         build_number = ENV['BUILD_NUMBER'].to_i
         loop do
+          build_url = "#{ENV['JOB_URL']}#{build_number}/api/json"
+          UI.verbose("Fetching changelog #{build_url}")
+          UI.verbose("- Branch #{build_branch}")
           begin
-            build_url = "#{ENV['JOB_URL']}#{build_number}/api/json"
             res =
               if Helper::CiChangelogHelper.determine_jenkins_basic_auth?
                 HTTP.basic_auth(user: @params.fetch(:jenkins_user), pass: @params.fetch(:jenkins_token))
@@ -88,8 +90,6 @@ module Fastlane
 
             if res.code == 200
               build_status, data = Helper::CiChangelogHelper.dump_jenkins_commits(res.body, build_branch)
-              UI.verbose("Fetching changelog #{build_url}")
-              UI.verbose("- Branch #{build_branch}")
               UI.verbose("- Status #{build_status}")
               UI.verbose("- Changelog #{data}")
 
@@ -99,10 +99,15 @@ module Fastlane
             end
 
             build_number -= 1
-
             break if build_number <= 0
-          rescue HTTP::Error
+          rescue JSON::ParserError => e
+            UI.verbose(e.message)
+            build_number -= 1
+            break if build_number <= 0
+          rescue HTTP::Error => e
             # NOTE: break out of loop if build setted keep max builds count
+            UI.verbose(e.message)
+            UI.verbose(e.backtrace.join("\n"))
             break
           end
         end
@@ -131,25 +136,35 @@ module Fastlane
         build_number = ENV['CI_BUILD_ID'].to_i
         loop do
           build_url = "#{@params[:gitlab_url]}/api/v3/projects/#{ENV['CI_PROJECT_ID']}/builds/#{build_number}"
-          res = HTTP.headers('PRIVATE-TOKEN' => @params[:gitlab_private_token]).get(build_url)
+          UI.verbose("Fetching changelog #{build_url}")
 
-          if res.code == 200
-            build_status, data = Helper::CiChangelogHelper.dump_gitlab_commits(res.body)
-            UI.verbose("Fetching changelog #{build_url}")
-            UI.verbose("- Status #{build_status}")
-            UI.verbose("- Changelog #{data}")
+          begin
+            res = HTTP.headers('PRIVATE-TOKEN' => @params[:gitlab_private_token]).get(build_url)
+            if res.code == 200
+              build_status, data = Helper::CiChangelogHelper.dump_gitlab_commits(res.body)
+              UI.verbose("- Status #{build_status}")
+              UI.verbose("- Changelog #{data}")
 
-            if build_status == true
-              commits = data if commits.empty?
-              fetch_correct_changelog = true
-            else
-              commits = commits.empty? ? data : commits.concat(data)
-              loop_count += 1
+              if build_status == true
+                commits = data if commits.empty?
+                fetch_correct_changelog = true
+              else
+                commits = commits.empty? ? data : commits.concat(data)
+                loop_count += 1
+              end
             end
-          end
-          build_number -= 1
+            build_number -= 1
 
-          break if fetch_correct_changelog || build_number <= 0
+            break if fetch_correct_changelog || build_number <= 0
+          rescue JSON::ParserError => e
+            UI.verbose(e.message)
+            build_number -= 1
+            break if fetch_correct_changelog || build_number <= 0
+          rescue HTTP::Error => e
+            UI.verbose(e.message)
+            UI.verbose(e.backtrace.join("\n"))
+            break
+          end
         end
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, commits.to_json)
