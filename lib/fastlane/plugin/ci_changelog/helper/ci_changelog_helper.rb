@@ -14,7 +14,8 @@ module Fastlane
 
       def self.dump_jenkins_commits(body, branch)
         json = JSON.parse(body)
-        result = json['result'] == 'SUCCESS' ? true : false
+        UI.verbose("- API Result: #{json['result']}")
+        result = json['building'] ? false : (json['result'] == 'SUCCESS')
 
         # return if previous build do not equal to current build branch.
         return [result, []] unless jenkins_use_same_branch?(json, branch)

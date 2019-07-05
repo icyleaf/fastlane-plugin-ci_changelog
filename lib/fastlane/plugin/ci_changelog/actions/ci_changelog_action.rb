@@ -75,6 +75,7 @@ module Fastlane
 
         build_branch = ENV['GIT_BRANCH']
         build_number = ENV['BUILD_NUMBER'].to_i
+
         loop do
           build_url = "#{ENV['JOB_URL']}#{build_number}/api/json"
           UI.verbose("Fetching changelog #{build_url}")
@@ -93,7 +94,7 @@ module Fastlane
               UI.verbose("- Status #{build_status}")
               UI.verbose("- Changelog #{data}")
 
-              changelog.concat(data) unless data.empty?
+              changelog.concat(data) unless build_status
 
               break if build_status == true
             end
