@@ -46,12 +46,12 @@ module Fastlane
       def self.print_table!
         data = Actions.lane_context[SharedValues::CICL_CHANGELOG]
         changelog =
-          if !data.nil? or !data.empty? or data.size != 0
+          if !data.to_s.empty? && data != '[]'
             JSON.parse(data).each_with_object([]) do |commit, obj|
               obj << commit.collect { |k, v| "#{k}: #{v}" }.join("\n")
             end.join("\n\n")
           else
-            'No change'
+            'Not found changelog'
           end
 
         params = {
