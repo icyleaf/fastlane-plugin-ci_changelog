@@ -136,7 +136,8 @@ module Fastlane
 
         build_number = ENV['CI_BUILD_ID'].to_i
         loop do
-          build_url = "#{@params[:gitlab_url]}/api/v3/projects/#{ENV['CI_PROJECT_ID']}/builds/#{build_number}"
+          gitlab_api_url = @params[:gitlab_api_url] || ENV['CI_API_V4_URL']
+          build_url = "#{gitlab_api_url}/projects/#{ENV['CI_PROJECT_ID']}/builds/#{build_number}"
           UI.verbose("Fetching changelog #{build_url}")
 
           begin
@@ -173,20 +174,18 @@ module Fastlane
 
       def self.fetch_gitlab_env!
         build_url =
-          if ENV['CI_PROJECT_URL']
-            "#{ENV['CI_PROJECT_URL']}/builds/#{ENV['CI_BUILD_ID']}"
-          else
-            uri = URI.parse(ENV['CI_BUILD_REPO'])
-            ci_project_namespace = ENV['CI_PROJECT_DIR'].split('/')[-2..-1].join('/')
-            url_port = uri.port == 80 ? '' : ":#{uri.port}"
-
-            "#{uri.scheme}://#{uri.host}#{url_port}/#{ci_project_namespace}/builds/#{ENV['CI_BUILD_ID']}"
+          if ENV['CI_JOB_URL']
+            # Gitlab >= 11.1, Runner 0.5
+            ENV['CI_JOB_URL']
+          elsif ENV['CI_PROJECT_URL']
+            # Gitlab >= 8.10, Runner 0.5
+            "#{ENV['CI_PROJECT_URL']}/-/jobs/#{ENV['CI_BUILD_ID']}"
           end
 
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CI, CICLType::GITLAB_CI)
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_BRANCH, ENV['CI_BUILD_REF_NAME'])
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_COMMIT, ENV['CI_BUILD_REF'])
-        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_PROJECT_URL, build_url)
+        Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_PROJECT_URL, build_url) if build_url
       end
 
       def self.output
@@ -228,9 +227,9 @@ module Fastlane
                                description: "the token or password of jenkins if enabled security",
                                   optional: true,
                                       type: String),
-          FastlaneCore::ConfigItem.new(key: :gitlab_url,
-                                  env_name: "CICL_CHANGELOG_GITLAB_URL",
-                               description: "the url of gitlab",
+          FastlaneCore::ConfigItem.new(key: :gitlab_api_url,
+                                  env_name: "CICL_CHANGELOG_GITLAB_API_URL",
+                               description: "the api url of gitlab",
                                   optional: true,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :gitlab_private_token,

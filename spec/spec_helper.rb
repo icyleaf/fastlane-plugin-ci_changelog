@@ -80,7 +80,7 @@ def stub_jenkins_project(count, commits, branch_number: nil, branch_name: nil, f
   end
 end
 
-def stub_gitlab_project(count, gitlab_url, private_token, failure_number: nil)
+def stub_gitlab_project(count, gitlab_api_url, private_token, failure_number: nil)
   failure_number ||= count
 
   template_created_at = Time.now.strftime('%FT%T%:z')
@@ -100,7 +100,7 @@ def stub_gitlab_project(count, gitlab_url, private_token, failure_number: nil)
     commit[:message] = commit[:message] % { number: i }
     commit[:title] = commit[:message]
 
-    template_url = Addressable::Template.new("#{gitlab_url}/api/v3/projects/{id}/builds/#{i}")
+    template_url = Addressable::Template.new("#{gitlab_api_url}/projects/{id}/builds/#{i}")
     stub_request(:any, template_url)
       .with(headers: { 'PRIVATE-TOKEN' => private_token })
       .to_return(

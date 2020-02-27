@@ -54,15 +54,17 @@ module Fastlane
       end
 
       def self.determine_gitlab_options!(options)
-        %w(gitlab_url gitlab_private_token).each do |key|
-          UI.user_error!("Missing #{key} param or empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
+        return if options[:gitlab_api_url].to_s.empty? && !ENV['CI_API_V4_URL'].to_s.empty?
+
+        %w(gitlab_api_url gitlab_private_token).each do |key|
+          UI.user_error!("Missing #{key} param or it is an empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
         end
       end
 
       def self.determine_jenkins_options!(options)
         if determine_jenkins_basic_auth?
           %w(jenkins_user jenkins_token).each do |key|
-            UI.user_error!("Missing #{key} param or empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
+            UI.user_error!("Missing #{key} param or it is an empty value.") unless options.fetch(key.to_sym) && !options[key.to_sym].empty?
           end
         end
       end

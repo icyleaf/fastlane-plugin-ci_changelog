@@ -53,7 +53,7 @@ Loading documentation for ci_changelog:
 | jenkins_user         | the user of jenkins if enabled security      | CICL_CHANGELOG_JENKINS_USER         |         |
 | jenkins_token        | the token or password of jenkins if enabled  | CICL_CHANGELOG_JENKINS_TOKEN        |         |
 |                      | security                                     |                                     |         |
-| gitlab_url           | the url of gitlab                            | CICL_CHANGELOG_GITLAB_URL           |         |
+| gitlab_api_url           | the api url of gitlab                            | CICL_CHANGELOG_GITLAB_API_URL           |         |
 | gitlab_private_token | the private token of gitlab                  | CICL_CHANGELOG_GITLAB_PRIVATE_TOKEN |         |
 +----------------------+----------------------------------------------+-------------------------------------+---------+
 
