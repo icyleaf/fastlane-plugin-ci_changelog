@@ -3,10 +3,6 @@ require 'json'
 module Fastlane
   module Helper
     class CiChangelogHelper
-      def self.show_message
-        UI.message("Hello from the ci_changelog plugin helper!")
-      end
-
       def self.git_commits(last_success_commit)
         git_logs = `git log --pretty="format:%s - %cn [%ci]" #{last_success_commit}..HEAD`.strip.gsub(' +0800', '')
         git_logs.split("\n")
@@ -35,23 +31,105 @@ module Fastlane
         [result, commits]
       end
 
-      def self.dump_gitlab_commits(body)
-        json = JSON.parse(body)
-        commit = {
-          id: json['commit']['id'],
-          date: json['commit']['created_at'],
-          title: json['commit']['title'].strip,
-          message: json['commit']['message'].strip,
-          author: json['commit']['author_name'].strip,
-          email: json['commit']['author_email'].strip
-        }
+      def self.dump_gitlab_commits(endpoint, private_token)
+        project_id = ENV['CI_PROJECT_ID']
+        from, to = fetch_gitlab_compare_commit(endpoint, private_token, project_id)
+        return [] unless from && to
 
-        if json['status'] == 'success'
-          [true, [commit]]
+        fetch_gitlab_commits(endpoint, private_token, project_id, from, to)
+      end
+
+      def self.fetch_gitlab_compare_commit(endpoint, private_token, project_id)
+        job_name = ENV['CI_JOB_NAME']
+
+        from_commit = nil
+        to_commit = nil
+
+        jobs_url = "#{endpoint}/projects/#{project_id}/jobs"
+        UI.verbose("Fetching jobs url #{jobs_url}")
+        res = res = HTTP.follow
+                         .headers('PRIVATE-TOKEN' => private_token)
+                         .get(jobs_url)
+
+        jobs = res.parse.select { |job| job['name'] == job_name }
+
+        commits = []
+        jobs.each_with_index do |job, i|
+          commit = job['pipeline']['sha']
+          case job['status']
+          when 'running'
+            to_commit = commit
+          when 'success'
+            if to_commit.nil?
+              to_commit = commit
+            elsif to_commit && from_commit.nil?
+              from_commit = commit
+            end
+          end
+        end
+
+        [from_commit, to_commit]
+      end
+
+      def self.fetch_gitlab_commit(body)
+        job_name = ENV['CI_JOB_NAME']
+        json = JSON.parse(body)
+        commit = json['pipeline']['sha']
+
+        if json['name'] != job_name
+          UI.verbose("No match job name: #{job_name} != #{json['name']}")
+          [false, commit]
+        elsif json['status'] == 'success'
+          [true, commit]
         else
-          [false, [commit]]
+          [false, commit]
         end
       end
+
+      def self.fetch_gitlab_commits(endpoint, private_token, project_id, from, to)
+        compare_url = "#{endpoint}/projects/#{project_id}/repository/compare"
+        params = {
+          from: from,
+          to: to
+        }
+
+        UI.verbose("Fetching commit compare url #{compare_url} with params: #{params}")
+        res = HTTP.follow
+                  .headers('PRIVATE-TOKEN' => private_token)
+                  .get(compare_url, params: params)
+
+        commits = []
+        if res.code == 200
+          res.parse['commits'].each do |commit|
+            commits << {
+              id: commit['id'],
+              date: commit['created_at'],
+              title: commit['title'].strip,
+              message: commit['title'].strip,
+              author: commit['author_name'].strip,
+              email: commit['author_email'].strip
+            }
+          end
+        end
+
+        commits
+      end
+
+      # def self.dump_gitlab_commits(body)
+      #   json = JSON.parse(body)
+      #   json['commits'].each_with_object([]) do |commit, obj|
+      #     commit = {
+            # id: commit['id'],
+            # date: commit['created_at'],
+            # title: commit['title'].strip,
+            # message: commit['title'].strip,
+            # author: commit['author_name'].strip,
+            # email: commit['author_email'].strip
+      #     }
+
+      #     obj << commit
+      #   end
+      # end
 
       def self.determine_gitlab_options!(options)
         return if options[:gitlab_api_url].to_s.empty? && !ENV['CI_API_V4_URL'].to_s.empty?

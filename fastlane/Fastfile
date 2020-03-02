@@ -12,3 +12,34 @@ lane :test do
     puts changelog["email"]
   end
 end
+
+lane :gitlab do
+  ci_changelog = ci_changelog(
+    gitlab_private_token: 'foobar'
+  )
+
+  ci_changelog.each do |changelog|
+    puts changelog["id"]
+    puts changelog["date"]
+    puts changelog["title"]
+    puts changelog["message"]
+    puts changelog["author"]
+    puts changelog["email"]
+  end
+end
+
+lane :jenkins do
+  ci_changelog = ci_changelog(
+    jenkins_user: 'foo',
+    jenkins_token: 'bar'
+  )
+
+  ci_changelog.each do |changelog|
+    puts changelog["id"]
+    puts changelog["date"]
+    puts changelog["title"]
+    puts changelog["message"]
+    puts changelog["author"]
+    puts changelog["email"]
+  end
+end
