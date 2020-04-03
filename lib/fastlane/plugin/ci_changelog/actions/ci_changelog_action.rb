@@ -113,9 +113,6 @@ module Fastlane
           end
         end
 
-        # NOTE: Auto detect the range changelog of build fail.
-        # commits = Helper::CiChangelogHelper.git_commits(ENV['GIT_PREVIOUS_SUCCESSFUL_COMMIT']) if Helper.is_test? && commits.empty?
-
         Helper::CiChangelogHelper.store_sharedvalue(SharedValues::CICL_CHANGELOG, changelog.to_json)
       end
 
