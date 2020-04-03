@@ -115,22 +115,6 @@ module Fastlane
         commits
       end
 
-      # def self.dump_gitlab_commits(body)
-      #   json = JSON.parse(body)
-      #   json['commits'].each_with_object([]) do |commit, obj|
-      #     commit = {
-            # id: commit['id'],
-            # date: commit['created_at'],
-            # title: commit['title'].strip,
-            # message: commit['title'].strip,
-            # author: commit['author_name'].strip,
-            # email: commit['author_email'].strip
-      #     }
-
-      #     obj << commit
-      #   end
-      # end
-
       def self.determine_gitlab_options!(options)
         return if options[:gitlab_api_url].to_s.empty? && !ENV['CI_API_V4_URL'].to_s.empty?
 
