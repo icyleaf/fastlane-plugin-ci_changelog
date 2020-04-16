@@ -3,11 +3,6 @@ require 'json'
 module Fastlane
   module Helper
     class CiChangelogHelper
-      def self.git_commits(last_success_commit)
-        git_logs = `git log --pretty="format:%s - %cn [%ci]" #{last_success_commit}..HEAD`.strip.gsub(' +0800', '')
-        git_logs.split("\n")
-      end
-
       def self.dump_jenkins_commits(body, branch)
         json = JSON.parse(body)
         UI.verbose("- API Result: #{json['result']}")
@@ -35,8 +30,11 @@ module Fastlane
         project_id = ENV['CI_PROJECT_ID']
         from, to = fetch_gitlab_compare_commit(endpoint, private_token, project_id)
         return [] unless from && to
-
-        fetch_gitlab_commits(endpoint, private_token, project_id, from, to)
+        if from == to
+          fetch_gitlab_single_commit(endpoint, private_token, project_id, from)
+        else
+          fetch_gitlab_commits(endpoint, private_token, project_id, from, to)
+        end
       end
 
       def self.fetch_gitlab_compare_commit(endpoint, private_token, project_id)
@@ -52,18 +50,22 @@ module Fastlane
                          .get(jobs_url)
 
         jobs = res.parse.select { |job| job['name'] == job_name }
+        UI.verbose("Matched jobs #{job_name}: #{jobs.size}")
 
-        commits = []
-        jobs.each_with_index do |job, i|
-          commit = job['pipeline']['sha']
-          case job['status']
-          when 'running'
-            to_commit = commit
-          when 'success'
-            if to_commit.nil?
+        if jobs.size == 1
+          to_commit = from_commit = jobs[0]['pipeline']['sha']
+        else
+          jobs.each_with_index do |job, i|
+            commit = job['pipeline']['sha']
+            case job['status']
+            when 'running'
               to_commit = commit
-            elsif to_commit && from_commit.nil?
-              from_commit = commit
+            when 'success'
+              if to_commit.nil?
+                to_commit = commit
+              elsif to_commit && from_commit.nil?
+                from_commit = commit
+              end
             end
           end
         end
@@ -84,6 +86,29 @@ module Fastlane
         else
           [false, commit]
         end
+      end
+
+      def self.fetch_gitlab_single_commit(endpoint, private_token, project_id, sha)
+        commit_url = "#{endpoint}/projects/#{project_id}/repository/commits/#{sha}"
+        UI.verbose("Fetching single commit url #{commit_url}")
+        res = HTTP.follow
+                  .headers('PRIVATE-TOKEN' => private_token)
+                  .get(commit_url)
+
+        commits = []
+        if res.code == 200
+          commit = res.parse
+          commits << {
+            id: commit['id'],
+            date: commit['created_at'],
+            title: commit['title'].strip,
+            message: commit['title'].strip,
+            author: commit['author_name'].strip,
+            email: commit['author_email'].strip
+          }
+        end
+
+        commits
       end
 
       def self.fetch_gitlab_commits(endpoint, private_token, project_id, from, to)
